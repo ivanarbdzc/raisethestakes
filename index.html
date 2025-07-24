@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Raise the Stakes</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gradient-to-br from-pink-200 via-yellow-100 to-green-200 min-h-screen p-4 font-sans">
+  <div id="app" class="max-w-4xl mx-auto">
+    <!-- Lobby -->
+    <div id="lobby" class="space-y-4">
+      <h1 class="text-4xl font-bold text-center text-fuchsia-700">Raise the Stakes 🎉</h1>
+      <div class="flex gap-2">
+        <input id="playerName" type="text" placeholder="Enter player name" class="p-2 border rounded grow" />
+        <button onclick="addPlayer()" class="bg-blue-500 text-white px-4 py-2 rounded">Add Player</button>
+      </div>
+      <ul id="playerList" class="list-disc pl-6 text-lg"></ul>
+      <button onclick="startGame()" class="bg-green-600 text-white px-6 py-2 rounded text-xl mt-4">Start Game</button>
+    </div>
+
+    <!-- Game Area -->
+    <div id="gameArea" class="hidden space-y-6">
+      <div class="flex justify-between items-center">
+        <div>
+          <h2 class="text-2xl font-semibold">Easy: <span id="easyCat" class="text-green-700"></span></h2>
+          <h2 class="text-2xl font-semibold">Hard: <span id="hardCat" class="text-red-700"></span></h2>
+        </div>
+        <button onclick="nextRound()" class="bg-indigo-600 text-white px-4 py-2 rounded">Next Round</button>
+      </div>
+
+      <div class="space-y-3">
+        <h3 class="text-xl font-semibold">Select highest bidder:</h3>
+        <select id="bidderSelect" class="p-2 border rounded w-full"></select>
+
+        <div class="flex flex-col gap-2">
+          <button onclick="markFinished('easy')" class="bg-green-500 text-white py-2 rounded">✅ Finished Easy Category</button>
+          <button onclick="markFinished('hard')" class="bg-red-500 text-white py-2 rounded">✅ Finished Hard Category</button>
+          <button onclick="markFailed()" class="bg-yellow-500 text-white py-2 rounded">❌ Failed to Finish</button>
+        </div>
+
+        <div class="space-y-2">
+          <h3 class="text-xl font-semibold">If someone stole, select them:</h3>
+          <select id="stealSelect" class="p-2 border rounded w-full"></select>
+          <button onclick="markSteal()" class="bg-purple-500 text-white py-2 rounded">💥 Mark Steal</button>
+        </div>
+      </div>
+
+      <div class="mt-6">
+        <h2 class="text-2xl font-bold mb-2">Scoreboard</h2>
+        <ul id="scoreboard" class="space-y-1 text-lg"></ul>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
