@@ -6,49 +6,85 @@
   <title>Raise the Stakes</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gradient-to-br from-pink-200 via-yellow-100 to-green-200 min-h-screen p-4 font-sans">
-  <div id="app" class="max-w-4xl mx-auto">
+<body class="bg-yellow-50 min-h-screen font-sans">
+  <div id="app" class="max-w-4xl mx-auto px-4 py-6 space-y-8">
     <!-- Lobby -->
     <div id="lobby" class="space-y-4">
-      <h1 class="text-4xl font-bold text-center text-fuchsia-700">Raise the Stakes 🎉</h1>
-      <div class="flex gap-2">
-        <input id="playerName" type="text" placeholder="Enter player name" class="p-2 border rounded grow" />
-        <button onclick="addPlayer()" class="bg-blue-500 text-white px-4 py-2 rounded">Add Player</button>
+      <h1 class="text-4xl font-extrabold text-center text-pink-600 drop-shadow-md">Raise the Stakes</h1>
+      <div class="flex flex-col sm:flex-row gap-2">
+        <input id="playerName" type="text" placeholder="Enter player name" class="p-3 border border-gray-300 rounded grow" />
+        <button onclick="addPlayer()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded shadow">Add Player</button>
       </div>
-      <ul id="playerList" class="list-disc pl-6 text-lg"></ul>
-      <button onclick="startGame()" class="bg-green-600 text-white px-6 py-2 rounded text-xl mt-4">Start Game</button>
+      <ul id="playerList" class="list-disc pl-6 text-lg text-gray-700"></ul>
+      <button onclick="startGame()" class="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded text-xl w-full shadow">Start Game</button>
     </div>
 
     <!-- Game Area -->
     <div id="gameArea" class="hidden space-y-6">
-      <div class="flex justify-between items-center">
+      <!-- Category Cards -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div id="easyCard" class="bg-green-500 text-white rounded-xl p-4 shadow-md transition-all duration-700 transform">
+          <h2 class="text-xl font-semibold">Easy Category</h2>
+          <p id="easyCat" class="text-2xl font-bold mt-2"></p>
+        </div>
+        <div id="hardCard" class="bg-red-500 text-white rounded-xl p-4 shadow-md transition-all duration-700 transform">
+          <h2 class="text-xl font-semibold">Hard Category</h2>
+          <p id="hardCat" class="text-2xl font-bold mt-2"></p>
+        </div>
+      </div>
+
+      <button onclick="nextRound()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded w-full sm:w-auto shadow">🎲 New Round</button>
+
+      <!-- Bidder + Results -->
+      <div class="space-y-4">
         <div>
-          <h2 class="text-2xl font-semibold">Easy: <span id="easyCat" class="text-green-700"></span></h2>
-          <h2 class="text-2xl font-semibold">Hard: <span id="hardCat" class="text-red-700"></span></h2>
-        </div>
-        <button onclick="nextRound()" class="bg-indigo-600 text-white px-4 py-2 rounded">Next Round</button>
-      </div>
-
-      <div class="space-y-3">
-        <h3 class="text-xl font-semibold">Select highest bidder:</h3>
-        <select id="bidderSelect" class="p-2 border rounded w-full"></select>
-
-        <div class="flex flex-col gap-2">
-          <button onclick="markFinished('easy')" class="bg-green-500 text-white py-2 rounded">✅ Finished Easy Category</button>
-          <button onclick="markFinished('hard')" class="bg-red-500 text-white py-2 rounded">✅ Finished Hard Category</button>
-          <button onclick="markFailed()" class="bg-yellow-500 text-white py-2 rounded">❌ Failed to Finish</button>
+          <label class="block font-semibold text-lg mb-1" for="bidderSelect">Who made the highest bid?</label>
+          <select id="bidderSelect" class="p-3 border rounded w-full"></select>
         </div>
 
-        <div class="space-y-2">
-          <h3 class="text-xl font-semibold">If someone stole, select them:</h3>
-          <select id="stealSelect" class="p-2 border rounded w-full"></select>
-          <button onclick="markSteal()" class="bg-purple-500 text-white py-2 rounded">💥 Mark Steal</button>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+          <button onclick="markFinished('easy')" class="bg-green-600 hover:bg-green-700 text-white py-2 rounded shadow">✅ Finished Easy</button>
+          <button onclick="markFinished('hard')" class="bg-red-600 hover:bg-red-700 text-white py-2 rounded shadow">✅ Finished Hard</button>
+          <button onclick="markFailed()" class="bg-yellow-500 hover:bg-yellow-600 text-white py-2 rounded shadow">❌ Failed</button>
         </div>
       </div>
 
+      <!-- Steal Area -->
+      <div id="stealArea" class="hidden mt-6 space-y-3 p-4 border-2 border-purple-600 rounded bg-purple-100 text-purple-900">
+        <p id="stealInfo" class="font-semibold text-lg"></p>
+        <label class="block font-semibold mb-1" for="stealSelect">Select player to attempt steal:</label>
+        <select id="stealSelect" class="p-3 border rounded w-full"></select>
+        <div class="flex gap-2 mt-2">
+          <button onclick="attemptSteal()" class="bg-purple-600 hover:bg-purple-700 text-white py-2 px-4 rounded shadow flex-grow">💥 Steal</button>
+          <button onclick="endStealMode()" class="bg-gray-600 hover:bg-gray-700 text-white py-2 px-4 rounded shadow flex-grow">⛔ No More Steals</button>
+        </div>
+      </div>
+
+      <!-- Scoreboard -->
       <div class="mt-6">
-        <h2 class="text-2xl font-bold mb-2">Scoreboard</h2>
-        <ul id="scoreboard" class="space-y-1 text-lg"></ul>
+        <h2 class="text-2xl font-bold mb-4 text-center text-blue-700">📊 Scoreboard</h2>
+        <table class="w-full table-auto border-collapse border border-gray-300 text-center text-lg">
+          <thead>
+            <tr class="bg-blue-300">
+              <th class="border border-gray-300 px-4 py-2">Player</th>
+              <th class="border border-gray-300 px-4 py-2">Score</th>
+            </tr>
+          </thead>
+          <tbody id="scoreboard">
+            <!-- Scores inserted here -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Confirm Modal -->
+  <div id="customConfirmModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div class="bg-white p-6 rounded-lg shadow-lg max-w-md w-full mx-4">
+      <p id="customConfirmMessage" class="text-lg mb-4"></p>
+      <div class="flex gap-2 justify-end">
+        <button id="confirmNo" class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded">No</button>
+        <button id="confirmYes" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded">Yes</button>
       </div>
     </div>
   </div>
